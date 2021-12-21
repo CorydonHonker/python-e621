@@ -79,15 +79,20 @@ def dtext_series_to_html(dtext_dict):  # expects {file_name: dtext, ...}
              'body{background-color:#1f3c67;color:white}.center{text-align: center;}' \
              '.full_bar{text-align: center;width:100%;}td {width:120px}button{width:100%}' \
              'table{width:100%;}button{height:30px;background-color:darkblue;color:white;}</style>'
-    head_b = '<html><body>'
-    nav_html = '<p class="center"><table><tr><td><button onclick="next(-1)">Left</button></td>' \
-               '<td><button onclick="next(1)">Right</button></td></tr></table></p>'
+    head_b = '<html><body id="body">'
+    nav_html = '<p class="center"><table><tr><td><button onclick="next(-1)">Left</button></td><td>' \
+               '<p class="center" id="idx_display">Page #: 0</p>' \
+               '</td><td><button onclick="next(1)">Right</button></td></tr></table></p>'
     nav_script = f'<script type="text/javascript">const page_ids = ["{separator.join(dtext_dict)}"];' \
                  'var pos = 0;for(var i = 1;i<page_ids.length;i++){' \
-                 'document.getElementById(page_ids[i]).style.visibility = "hidden";};function next(dir=0){' \
-                 'document.getElementById(page_ids[pos]).style.visibility = "hidden";' \
+                 'document.getElementById(page_ids[i]).style.display = "none";};function next(dir=0){' \
+                 'document.getElementById(page_ids[pos]).style.display = "none";' \
                  'pos = (page_ids.length + pos + dir) % page_ids.length;' \
-                 'document.getElementById(page_ids[pos]).style.visibility = "visible";};</script>'
+                 'document.getElementById(page_ids[pos]).style.display = "Inline";' \
+                 'document.getElementById("idx_display").innerHTML = "Page # " + pos;};' \
+                 'document.getElementById("body").addEventListener("keydown", (event) => {' \
+                 'if(event.keyCode == 37||event.keyCode == 65){next(-1)};' \
+                 'if(event.keyCode == 39||event.keyCode == 68){next(1)};});</script>'
     tail = '</body></html>'
     if len(dtext_dict) == 1:  # true if no neighbors
         for file_name, dtext in dtext_dict.items():  # add header and return html
